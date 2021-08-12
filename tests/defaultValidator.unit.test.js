@@ -7,9 +7,10 @@ const defaultValidator = require('../lib/default-validator.js');
 const { init, load, get, save } = require('../index.js');
 const fixtureDirectory = path.join(__dirname, 'fixtures');
 const defaultOrgEnvFilename = `load-victorshaw-eval-test-config.yaml`;
-let customFixtureDirPath = path.join(fixtureDirectory, defaultOrgEnvFilename);
+const customFixtureDirPath = path.join(fixtureDirectory, defaultOrgEnvFilename);
 // let cachedConfigFixturePath = path.join(fixtureDirectory, 'cached.yaml');
 const loadedConfig = load({ source: customFixtureDirPath });
+const _ = require('lodash');
 
 
 describe('default-validator module', () => {
@@ -64,7 +65,7 @@ describe('default-validator module', () => {
             assert(err instanceof Error);
             assert(err.message.includes('config.edge_config.refresh_interval is too small (min 1h)'));
             done();
-        };
+        }
     });
 
     it('throws error for invalid quotas type', (done) => {
@@ -157,7 +158,7 @@ describe('default-validator module', () => {
         try {
             defaultValidator.validate(quotas);
         } catch (err) {
-           flag = err.message.includes('config.quotas.useRedis is not an boolean');
+           flag = err.message.includes('config.quotas.useRedis should be a boolean');
         }
         assert(flag);
         done();
@@ -169,7 +170,7 @@ describe('default-validator module', () => {
         try {
             defaultValidator.validate(quotas);
         } catch (err) {
-           flag = err.message.includes('config.quotas.useRedis is not an boolean');
+           flag = err.message.includes('config.quotas.useRedis should be a boolean');
         }
         assert(flag);
         done();
@@ -187,7 +188,7 @@ describe('default-validator module', () => {
         try {
             defaultValidator.validate(quotas);
         } catch (err) {
-           flag = err.message.includes('config.quotas.useDebugMpId is not an boolean');
+           flag = err.message.includes('config.quotas.useDebugMpId should be a boolean');
         }
         assert(flag);
         done();
@@ -199,7 +200,7 @@ describe('default-validator module', () => {
         try {
             defaultValidator.validate(quotas);
         } catch (err) {
-           flag = err.message.includes('config.quotas.useDebugMpId is not an boolean');
+           flag = err.message.includes('config.quotas.useDebugMpId should be a boolean');
         }
         assert(flag);
         done();
@@ -217,7 +218,7 @@ describe('default-validator module', () => {
         try {
             defaultValidator.validate(quotas);
         } catch (err) {
-           flag = err.message.includes('config.quotas.failOpen is not an boolean');
+           flag = err.message.includes('config.quotas.failOpen should be a boolean');
         }
         assert(flag);
         done();
@@ -229,7 +230,7 @@ describe('default-validator module', () => {
         try {
             defaultValidator.validate(quotas);
         } catch (err) {
-           flag = err.message.includes('config.quotas.failOpen is not an boolean');
+           flag = err.message.includes('config.quotas.failOpen should be a boolean');
         }
         assert(flag);
         done();
@@ -240,4 +241,369 @@ describe('default-validator module', () => {
         defaultValidator.validate(quotas);
         done();
     });
+
+    it('throws error for null to_console', (done) => {
+        const invalidToConsole = _.cloneDeep(loadedConfig)
+        invalidToConsole.edgemicro.logging.to_console = null
+        try {
+            defaultValidator.validate(invalidToConsole);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.logging.to_console should be a boolean'));
+        }
+        done();
+    });
+
+    it('throws error for invalid to_console', (done) => {
+        const invalidToConsole = _.cloneDeep(loadedConfig)
+        invalidToConsole.edgemicro.logging.to_console = true
+        try {
+            defaultValidator.validate(invalidToConsole);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.logging.to_console should be a boolean'));
+        }
+        done();
+    });
+
+    it('Accepts a valid to_console', (done) => {
+        const toConsole = _.cloneDeep(loadedConfig)
+        toConsole.edgemicro.logging.to_console = true
+        defaultValidator.validate(toConsole);
+        done();
+    });
+
+    it('throws error for null excludeUrls', (done) => {
+        const invalidExcludeUrls = _.cloneDeep(loadedConfig)
+        invalidExcludeUrls.edgemicro.plugins.excludeUrls = null
+        try {
+            defaultValidator.validate(invalidExcludeUrls);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.plugins.excludeUrls is not an string'));
+        }
+        done();
+    });
+
+    it('throws error for invalid excludeUrls', (done) => {
+        const invalidExcludeUrls = _.cloneDeep(loadedConfig)
+        invalidExcludeUrls.edgemicro.plugins.excludeUrls = true
+        try {
+            defaultValidator.validate(invalidExcludeUrls);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.plugins.excludeUrls is not an string'));
+        }
+        done();
+    });
+
+    it('Accepts a valid excludeUrls', (done) => {
+        const excludeUrls = _.cloneDeep(loadedConfig)
+        excludeUrls.edgemicro.plugins.excludeUrls = 'test_url'
+        defaultValidator.validate(excludeUrls);
+        done();
+    });
+
+    it('throws error for null disableExcUrlsCache', (done) => {
+        const invalidDisableExcUrlsCache = _.cloneDeep(loadedConfig)
+        invalidDisableExcUrlsCache.edgemicro.plugins.disableExcUrlsCache = null
+        try {
+            defaultValidator.validate(invalidDisableExcUrlsCache);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.plugins.disableExcUrlsCache should be a boolean'));
+        }
+        done();
+    });
+
+    it('throws error for non-boolean disableExcUrlsCache', (done) => {
+        const invalidDisableExcUrlsCache = _.cloneDeep(loadedConfig)
+        invalidDisableExcUrlsCache.edgemicro.plugins.disableExcUrlsCache = 'invalid'
+        try {
+            defaultValidator.validate(invalidDisableExcUrlsCache);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.plugins.disableExcUrlsCache should be a boolean'));
+        }
+        done();
+    });
+
+    it('Accepts a valid disableExcUrlsCache', (done) => {
+        const disableExcUrlsCache = _.cloneDeep(loadedConfig)
+        disableExcUrlsCache.edgemicro.plugins.disableExcUrlsCache = true
+        defaultValidator.validate(disableExcUrlsCache);
+        done();
+    });
+
+    it('throws error for null keep_alive_timeout', (done) => {
+        const invalidKeepAliveTimeout = _.cloneDeep(loadedConfig)
+        invalidKeepAliveTimeout.edgemicro.keep_alive_timeout = null
+        try {
+            defaultValidator.validate(invalidKeepAliveTimeout);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.keep_alive_timeout is not an number'));
+        }
+        done();
+    });
+
+    it('throws error for invalid keep_alive_timeout', (done) => {
+        const invalidKeepAliveTimeout = _.cloneDeep(loadedConfig)
+        invalidKeepAliveTimeout.edgemicro.keep_alive_timeout = 'over99'
+        try {
+            defaultValidator.validate(invalidKeepAliveTimeout);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.keep_alive_timeout is not an number'));
+        }
+        done();
+    });
+
+    it('throws error if keep_alive_timeout is not greater than zero', (done) => {
+        const invalidKeepAliveTimeout = _.cloneDeep(loadedConfig)
+        invalidKeepAliveTimeout.edgemicro.keep_alive_timeout = 0
+        try {
+            defaultValidator.validate(invalidKeepAliveTimeout);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.keep_alive_timeout should be greater than 0'));
+        }
+        done();
+    });
+
+    it('Accepts a valid keep_alive_timeout', (done) => {
+        const keepAliveTimeout = _.cloneDeep(loadedConfig)
+        keepAliveTimeout.edgemicro.keep_alive_timeout = 100
+        defaultValidator.validate(keepAliveTimeout);
+        done();
+    });
+
+    it('throws error for null headers_timeout', (done) => {
+        const invalidHeadersTimeout = _.cloneDeep(loadedConfig)
+        invalidHeadersTimeout.edgemicro.headers_timeout = null
+        try {
+            defaultValidator.validate(invalidHeadersTimeout);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.headers_timeout is not an number'));
+        }
+        done();
+    });
+
+    it('throws error for invalid headers_timeout', (done) => {
+        const invalidHeadersTimeout = _.cloneDeep(loadedConfig)
+        invalidHeadersTimeout.edgemicro.headers_timeout = 'over99'
+        try {
+            defaultValidator.validate(invalidHeadersTimeout);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.headers_timeout is not an number'));
+        }
+        done();
+    });
+
+    it('throws error if headers_timeout is not greater than zero', (done) => {
+        const invalidHeadersTimeout = _.cloneDeep(loadedConfig)
+        invalidHeadersTimeout.edgemicro.headers_timeout = 0
+        try {
+            defaultValidator.validate(invalidHeadersTimeout);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.headers_timeout should be greater than 0'));
+        }
+        done();
+    });
+
+    it('Accepts a valid headers_timeout', (done) => {
+        const headersTimeout = _.cloneDeep(loadedConfig)
+        headersTimeout.edgemicro.headers_timeout = 100
+        defaultValidator.validate(headersTimeout);
+        done();
+    });
+
+    it('throws error for null redisHost', (done) => {
+        const invalidRedisHost = _.cloneDeep(loadedConfig)
+        invalidRedisHost.edgemicro.redisHost = null
+        try {
+            defaultValidator.validate(invalidRedisHost);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisHost is not an string'));
+        }
+        done();
+    });
+
+    it('throws error for invalid redisHost', (done) => {
+        const invalidRedisHost = _.cloneDeep(loadedConfig)
+        invalidRedisHost.edgemicro.redisHost = true
+        try {
+            defaultValidator.validate(invalidRedisHost);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisHost is not an string'));
+        }
+        done();
+    });
+
+    it('Accepts a valid redisHost', (done) => {
+        const redisHost = _.cloneDeep(loadedConfig)
+        redisHost.edgemicro.redisHost = 'redis_host_url'
+        defaultValidator.validate(redisHost);
+        done();
+    });
+
+    it('throws error for null redisPort', (done) => {
+        const invalidRedisPort = _.cloneDeep(loadedConfig)
+        invalidRedisPort.edgemicro.redisPort = null
+        try {
+            defaultValidator.validate(invalidRedisPort);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisPort is not an number'));
+        }
+        done();
+    });
+
+    it('throws error for invalid redisPort', (done) => {
+        const invalidRedisPort = _.cloneDeep(loadedConfig)
+        invalidRedisPort.edgemicro.redisPort = true
+        try {
+            defaultValidator.validate(invalidRedisPort);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisPort is not an number'));
+        }
+        done();
+    });
+
+    it('Accepts a valid redisPort', (done) => {
+        const redisPort = _.cloneDeep(loadedConfig)
+        redisPort.edgemicro.redisPort = 1111
+        defaultValidator.validate(redisPort);
+        done();
+    });
+
+    it('throws error for null redisDb', (done) => {
+        const invalidRedisDb = _.cloneDeep(loadedConfig)
+        invalidRedisDb.edgemicro.redisDb = null
+        try {
+            defaultValidator.validate(invalidRedisDb);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisDb is not an number'));
+        }
+        done();
+    });
+
+    it('throws error for invalid redisDb', (done) => {
+        const invalidRedisDb = _.cloneDeep(loadedConfig)
+        invalidRedisDb.edgemicro.redisDb = 'over99'
+        try {
+            defaultValidator.validate(invalidRedisDb);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisDb is not an number'));
+        }
+        done();
+    });
+
+    it('throws error if redisDb is less than zero', (done) => {
+        const invalidRedisDb = _.cloneDeep(loadedConfig)
+        invalidRedisDb.edgemicro.redisDb = -20
+        try {
+            defaultValidator.validate(invalidRedisDb);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisDb must be >= 0'));
+        }
+        done();
+    });
+
+    it('Accepts a valid redisDb', (done) => {
+        const redisDb = _.cloneDeep(loadedConfig)
+        redisDb.edgemicro.redisDb = 100
+        defaultValidator.validate(redisDb);
+        done();
+    });
+
+    it('throws error for null redisPassword', (done) => {
+        const invalidRedisPassword = _.cloneDeep(loadedConfig)
+        invalidRedisPassword.edgemicro.redisPassword = null
+        try {
+            defaultValidator.validate(invalidRedisPassword);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisPassword is not an string'));
+        }
+        done();
+    });
+
+    it('throws error for invalid redisPassword', (done) => {
+        const invalidRedisPassword = _.cloneDeep(loadedConfig)
+        invalidRedisPassword.edgemicro.redisPassword = 100
+        try {
+            defaultValidator.validate(invalidRedisPassword);
+        } catch (err) {
+            assert(err.message.includes('config.edgemicro.redisPassword is not an string'));
+        }
+        done();
+    });
+
+    it('Accepts a valid redisPassword', (done) => {
+        const redisPassword = _.cloneDeep(loadedConfig)
+        redisPassword.edgemicro.redisPassword = 'valid_pass'
+        defaultValidator.validate(redisPassword);
+        done();
+    });
+
+    it('throws error for null redisBasedConfigCache', (done) => {
+        const invalidRedisBasedConfigCache = _.cloneDeep(loadedConfig)
+        invalidRedisBasedConfigCache.edge_config.redisBasedConfigCache = null
+        try {
+            defaultValidator.validate(invalidRedisBasedConfigCache);
+        } catch (err) {
+            assert(err.message.includes('config.edge_config.redisBasedConfigCache should be a boolean'));
+        }
+        done();
+    });
+
+    it('throws error for non-boolean redisBasedConfigCache', (done) => {
+        const invalidRedisBasedConfigCache = _.cloneDeep(loadedConfig)
+        invalidRedisBasedConfigCache.edge_config.redisBasedConfigCache = 100
+        try {
+            defaultValidator.validate(invalidRedisBasedConfigCache);
+        } catch (err) {
+            assert(err.message.includes('config.edge_config.redisBasedConfigCache should be a boolean'));
+        }
+        done();
+    });
+
+    it('Accepts a valid redisBasedConfigCache', (done) => {
+        const redisBasedConfigCache = _.cloneDeep(loadedConfig)
+        redisBasedConfigCache.edge_config.redisBasedConfigCache = true
+        defaultValidator.validate(redisBasedConfigCache);
+        done();
+    });
+
+    it('throws error for null synchronizerMode', (done) => {
+        const invalidSynchronizerMode = _.cloneDeep(loadedConfig)
+        invalidSynchronizerMode.edge_config.synchronizerMode = null
+        try {
+            defaultValidator.validate(invalidSynchronizerMode);
+        } catch (err) {
+            assert(err.message.includes('config.edge_config.synchronizerMode is not a number'));
+        }
+        done();
+    });
+
+    it('throws error for invalid synchronizerMode', (done) => {
+        const invalidSynchronizerMode = _.cloneDeep(loadedConfig)
+        invalidSynchronizerMode.edge_config.synchronizerMode = 'invalid'
+        try {
+            defaultValidator.validate(invalidSynchronizerMode);
+        } catch (err) {
+            assert(err.message.includes('config.edge_config.synchronizerMode is not a number'));
+        }
+        done();
+    });
+
+    it('throws error for invalid integer value of synchronizerMode', (done) => {
+        const invalidSynchronizerMode = _.cloneDeep(loadedConfig)
+        invalidSynchronizerMode.edge_config.synchronizerMode = 5
+        try {
+            defaultValidator.validate(invalidSynchronizerMode);
+        } catch (err) {
+            assert(err.message.includes('config.edge_config.synchronizerMode should be either 0 | 1 | 2'));
+        }
+        done();
+    });
+
+    it('Accepts a valid synchronizerMode', (done) => {
+        const synchronizerMode = _.cloneDeep(loadedConfig)
+        synchronizerMode.edge_config.synchronizerMode = 1
+        defaultValidator.validate(synchronizerMode);
+        done();
+    });
+    
+
 });
