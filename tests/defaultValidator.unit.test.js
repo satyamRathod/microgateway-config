@@ -604,6 +604,77 @@ describe('default-validator module', () => {
         defaultValidator.validate(synchronizerMode);
         done();
     });
+
+    //prapunj-test-cases
+
+    it('throws error for non boolean enableanalytics', (done) => {
+        const enableAnalytics = _.cloneDeep(loadedConfig)
+        enableAnalytics.edgemicro.enableAnalytics = 'string' 
+        try{   
+        defaultValidator.validate(enableAnalytics)
+    }catch(err){
+        assert(err.message.includes("config.edgemicro.enableAnalytics should be a boolean"))
+    }
+        done();
+    });
+
+    it('throws error for invalid logTargetErrorsAs', (done) => {
+        const logTargetErrorsAs = _.cloneDeep(loadedConfig)
+        logTargetErrorsAs.edgemicro.logTargetErrorsAs = 'overx' 
+        try{   
+        defaultValidator.validate(logTargetErrorsAs)
+    }catch(err){
+        assert(err.message.includes("invalid value for config.edgemicro.logTargetErrorsAs"))
+    }
+        done();
+    });
+
+    it('throws error for invalid accesscontrol', (done) => {
+        const accesscontrolconf = _.cloneDeep(loadedConfig)
+        accesscontrolconf.accesscontrol={noRuleMatchAction :true} 
+        try{   
+        defaultValidator.validate(accesscontrolconf)
+    }catch(err){
+        assert(err.message.includes("config.accesscontrol.noRuleMatchAction is not an string"))
+    }
+        done();
+    });
+
+    it('throws error for non boolean enable_GET_req_body', (done) => {
+        const enable = _.cloneDeep(loadedConfig)
+        enable.edgemicro.enable_GET_req_body = "overx" 
+        //console.log(enable_GET_req_body)
+        try{   
+        defaultValidator.validate(enable)
+    }catch(err){
+        assert(err.message.includes("config.edgemicro.enable_GET_req_body should be a boolean"))
+    }
+        done();
+    });
+
+    it('throws error for non number enableanalytics buffersize', (done) => {
+        const enableAnalyticsbuff = _.cloneDeep(loadedConfig)
+        enableAnalyticsbuff.edgemicro.enableAnalytics = true
+        enableAnalyticsbuff.analytics = {bufferSize :'string'} 
+        try{   
+        defaultValidator.validate(enableAnalyticsbuff)
+    }catch(err){
+        assert(err.message.includes("config.analytics.bufferSize is not a number"))
+    }
+        done();
+    });
+
+    it('throws error for non positive enableanalytics buffersize', (done) => {
+        const enableAnalyticsbuff = _.cloneDeep(loadedConfig)
+        enableAnalyticsbuff.edgemicro.enableAnalytics = true
+        enableAnalyticsbuff.analytics = {bufferSize :-1} 
+        try{   
+        defaultValidator.validate(enableAnalyticsbuff)
+    }catch(err){
+        assert(err.message.includes("config.analytics.bufferSize is invalid"))
+    }
+        done();
+    });
     
 
 });
