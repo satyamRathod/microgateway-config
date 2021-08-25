@@ -6,7 +6,7 @@ var proxies = {
       "apiProxyName" : "edgemicro_proxyOne",
       "revision" : "1",
       "proxyEndpoint" : { "name" : "default","basePath" : "/proxyOne" },
-      "targetEndpoint" : { "name" : "default","url" : "http://localhost:8080/" }
+      "targetEndpoint" : { "name" : "default","url" : "http://localhost:8080/", timeout: 100 }
     },
     {
       "apiProxyName" : "edgemicro_proxyTwo",
@@ -48,7 +48,10 @@ var products = {
       "lastModifiedAt" : 123456789,
       "lastModifiedBy" : "test@example.com",
       "name" : "productOne",
-      "proxies" : [ "edgemicro_proxyOne", "edgemicro_proxyTwo" ],
+      "proxies": ["edgemicro_proxyOne", "edgemicro_proxyTwo"],
+      "quota": '21',
+      "quotaInterval": '1',
+      "quotaTimeUnit": 'minute',
       "scopes" : [ "" ]
     },
     {
