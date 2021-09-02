@@ -11,20 +11,20 @@ const keys = {
     secret: 'mYt3sTs3Cr3T'
 };
 
-let configlibmockValid = proxyquire.load('../index.js', {
+const configlibmockValid = proxyquire.load('../index.js', {
     './lib/network': proxyquire.load('../lib/network', {
         'request': mockRequestValid
     })
 });
 
-let configlibmockInvalidProducts = proxyquire.load('../index.js', {
+const configlibmockInvalidProducts = proxyquire.load('../index.js', {
     './lib/network': proxyquire.load('../lib/network', {
         'request': mockRequestInvalidProducts
     })
 });
 
 
-let configlibmockInvalidProxies = proxyquire.load('../index.js', {
+const configlibmockInvalidProxies = proxyquire.load('../index.js', {
     './lib/network': proxyquire.load('../lib/network', {
         'request': mockRequestInvalidProxies
     })
@@ -40,6 +40,21 @@ describe('config - get ', () => {
             done();
         });
     });
+
+    it('synchronizerMode mode enabled', done => {
+        configlibmockValid.get({ source: './tests/fixtures/load-victorshaw-eval-test-config_sync.yaml', keys: keys }, (err, config) => {
+            assert(!err);
+            done();
+        });
+    });
+
+    it('redisBasedConfigCache mode enabled', done => {
+        configlibmockValid.get({ source: './tests/fixtures/load-victorshaw-eval-test-config_redisBasedConfigCache.yaml', keys: keys }, (err, config) => {
+            assert(!err);
+            done();
+        });
+    });
+
 
     it('displays error when receiving invalid JSON product info', (done) => {
         var saveErr = console.error;

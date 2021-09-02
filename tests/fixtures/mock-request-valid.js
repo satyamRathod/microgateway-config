@@ -6,7 +6,7 @@ var proxies = {
       "apiProxyName" : "edgemicro_proxyOne",
       "revision" : "1",
       "proxyEndpoint" : { "name" : "default","basePath" : "/proxyOne" },
-      "targetEndpoint" : { "name" : "default","url" : "http://localhost:8080/" }
+      "targetEndpoint" : { "name" : "default","url" : "http://localhost:8080/", "timeout": 100 }
     },
     {
       "apiProxyName" : "edgemicro_proxyTwo",
@@ -32,7 +32,7 @@ var proxies = {
 var products = {
   "apiProduct" : [
     {
-      "apiResources" : [ "/**" ],
+      "apiResources" : ["/**"],
       "approvalType" : "auto",
       "attributes" : [
         {
@@ -44,15 +44,18 @@ var products = {
       "createdBy" : "test@example.com",
       "description" : "",
       "displayName" : "productOne",
-      "environments" : [ "test" ],
+      "environments" : ["test"],
       "lastModifiedAt" : 123456789,
       "lastModifiedBy" : "test@example.com",
       "name" : "productOne",
-      "proxies" : [ "edgemicro_proxyOne", "edgemicro_proxyTwo" ],
-      "scopes" : [ "" ]
+      "proxies": ["edgemicro_proxyOne", "edgemicro_proxyTwo"],
+      "quota": '21',
+      "quotaInterval": '1',
+      "quotaTimeUnit": 'minute',
+      "scopes" : [""]
     },
     {
-      "apiResources" : [ "/**" ],
+      "apiResources" : ["/**"],
       "approvalType" : "auto",
       "attributes" : [
         {
@@ -64,15 +67,15 @@ var products = {
       "createdBy" : "test@example.com",
       "description" : "",
       "displayName" : "productTwo",
-      "environments" : [ "test" ],
+      "environments" : ["test"],
       "lastModifiedAt" : 123456789,
       "lastModifiedBy" : "test@example.com",
       "name" : "productTwo",
-      "proxies" : [ "edgemicro_proxyOne", "edgemicro_proxyThree" ],
-      "scopes" : [ "" ]
+      "proxies" : ["edgemicro_proxyOne", "edgemicro_proxyThree"],
+      "scopes" : [""]
     },
     {
-      "apiResources" : [ "/**" ],
+      "apiResources" : ["/**"],
       "approvalType" : "auto",
       "attributes" : [
         {
@@ -84,12 +87,12 @@ var products = {
       "createdBy" : "test@example.com",
       "description" : "",
       "displayName" : "productThree",
-      "environments" : [ "test" ],
+      "environments" : ["test"],
       "lastModifiedAt" : 123456789,
       "lastModifiedBy" : "test@example.com",
       "name" : "productThree",
-      "proxies" : [ "edgemicro_proxyThree", "edgemicro_proxyFour" ],
-      "scopes" : [ "" ]
+      "proxies" : ["edgemicro_proxyThree", "edgemicro_proxyFour"],
+      "scopes" : [""]
     }
   ]
 };
